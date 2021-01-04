@@ -1,12 +1,9 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
@@ -15,9 +12,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +23,6 @@ import java.util.Random;
 
 public class Main extends Application {
     private static final Text textTittle = new Text("Snake Game");
-    private static final Text textGameOver = new Text("Game Over");
-    private static final Button buttonPlayAgain = new Button("Play Again");
     private static final Text textStart = new Text("Start");
     private static final Text textHowToPlay = new Text("How To Play");
     private static final Text textQuit = new Text("Quit");
@@ -35,6 +31,8 @@ public class Main extends Application {
     private static final Text text2 = new Text("Eat food to get higher mark");
     private static final Text text3 = new Text("Cannot collide with your body");
     private static final Text text4 = new Text("Cannot collide the wall");
+    private static final Text textGameOver = new Text("Game Over");
+    private static final Text textPlayAgain = new Text("Play Again");
 
     //variable for snake
     static int speed = 6;
@@ -44,73 +42,57 @@ public class Main extends Application {
     static int foodX = 0;
     static int foodY = 0;
     static int cornerSize = 15;
+    static boolean gameOver = false;
     static List<Corner> snake = new ArrayList<>();
     static Dir direction = Dir.left;
-    static boolean gameOver = false;
-    static Random rand = new Random();
-    static Stage stageGameOver = new Stage();
-    static Stage stageGame = new Stage();
+    static Random random = new Random();
     static AnimationTimer a;
     static GraphicsContext gc;
     static Canvas c;
+    static Stage stageGame = new Stage();
+    static Stage stageGameOver = new Stage();
 
     @Override
     public void start(Stage primaryStage) {
-        //Create button
-        Rectangle rectangleStart = new Rectangle();
-        rectangleStart.setFill(Color.RED);
-        rectangleStart.setWidth(100);
-        rectangleStart.setHeight(30);
-        rectangleStart.setX(110);
-        rectangleStart.setY(40);
-        textStart.setX(140);
-        textStart.setY(60);
-        textStart.setFont(Font.font("cooper black",15));
-
-        Rectangle rectangleHowToPlay = new Rectangle();
-        rectangleHowToPlay.setFill(Color.CYAN);
-        rectangleHowToPlay.setWidth(100);
-        rectangleHowToPlay.setHeight(30);
-        rectangleHowToPlay.setX(110);
-        rectangleHowToPlay.setY(75);
-        textHowToPlay.setX(112);
-        textHowToPlay.setY(95);
-        textHowToPlay.setFont(Font.font("cooper black",15));
-
-        Rectangle rectangleQuit = new Rectangle();
-        rectangleQuit.setFill(Color.RED);
-        rectangleQuit.setWidth(100);
-        rectangleQuit.setHeight(30);
-        rectangleQuit.setX(110);
-        rectangleQuit.setY(110);
-        textQuit.setX(142);
-        textQuit.setY(130);
-        textQuit.setFont(Font.font("cooper black",15));
-
-        //Create vBox to hold buttons
-        Pane paneButton = new Pane();
-        paneButton.getChildren().addAll(rectangleStart, textStart, rectangleHowToPlay, textHowToPlay, rectangleQuit, textQuit);
-
         //Create stackPane to hold the text(tittle)
         StackPane stackPane = new StackPane();
         textTittle.setFont(Font.font("cooper black",50));
-        textTittle.setFill(Color.BLUE);
+        textTittle.setFill(Color.WHITESMOKE);
         stackPane.getChildren().add(textTittle);
         stackPane.setPadding(new Insets(2, 10, 0, 10));
         stackPane.setAlignment(Pos.CENTER);
 
-        //Create borderPane
+        //Setting text (button)
+        textStart.setX(140);
+        textStart.setY(65);
+        textStart.setFill(Color.WHITESMOKE);
+        textStart.setFont(Font.font("cooper black",20));
+
+        textHowToPlay.setX(102);
+        textHowToPlay.setY(100);
+        textHowToPlay.setFill(Color.WHITESMOKE);
+        textHowToPlay.setFont(Font.font("cooper black",20));
+
+        textQuit.setX(142);
+        textQuit.setY(130);
+        textQuit.setFill(Color.WHITESMOKE);
+        textQuit.setFont(Font.font("cooper black",20));
+
+        //Create vBox to hold text (button)
+        Pane paneButton = new Pane();
+        paneButton.getChildren().addAll(textStart, textHowToPlay, textQuit);
+
+        //Create borderPane to hole title and all the text (button)
         BorderPane borderPane = new BorderPane();
         borderPane.setPadding(new Insets(0, 10, 100, 10));
         borderPane.setCenter(paneButton);
         borderPane.setTop(stackPane);
-        borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        borderPane.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         //Create first scene
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Snake Game");
-
         primaryStage.show();
         primaryStage.setResizable(false);
 
@@ -135,68 +117,62 @@ public class Main extends Application {
         imageView4.setFitWidth(100);
         text4.setFont(Font.font("cooper black",20));
 
-        //Create button
+        //Setting text (button)
         textBack.setFont(Font.font("cooper black",20));
         textBack.setFill(Color.RED);
 
+        //Create gridPane to hole the image and text
         GridPane gridPane = new GridPane();
-        gridPane.add(text1,0,1);
-        gridPane.add(text2,0,3);
         gridPane.add(imageView1,0,0);
+        gridPane.add(text1,0,1);
         gridPane.add(imageView2,0,2);
+        gridPane.add(text2,0,3);
         gridPane.add(imageView3,1,0);
-        gridPane.add(imageView4,1,2);
         gridPane.add(text3,1,1);
+        gridPane.add(imageView4,1,2);
         gridPane.add(text4,1,3);
         gridPane.setVgap(5);
-        gridPane.setHgap(8);
+        gridPane.setHgap(10);
         gridPane.setAlignment(Pos.CENTER);
 
+        //Create borderPane to hole the gridPane and textBack
         BorderPane borderPane2 = new BorderPane();
         borderPane2.setCenter(gridPane);
         borderPane2.setBottom(textBack);
         borderPane2.setPadding(new Insets(5,5,5,5));
+        borderPane2.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
         Scene sceneHowToPlay = new Scene(borderPane2);
-        Stage stage2 = new Stage();
-        stage2.setScene(sceneHowToPlay);
-        stage2.setTitle("How To Play");
-        stage2.setResizable(false);
+        Stage stageHowToPlay = new Stage();
+        stageHowToPlay.setScene(sceneHowToPlay);
+        stageHowToPlay.setTitle("How To Play");
+        stageHowToPlay.setResizable(false);
 
-        //Add button function
-        rectangleStart.setOnMouseClicked(e -> {
-            primaryStage.close();
-            stageGame.show();
-            startGame();
-        });
+        //Add text (button) function
         textStart.setOnMouseClicked(e -> {
             primaryStage.close();
             stageGame.show();
             startGame();
         });
 
-        rectangleHowToPlay.setOnMouseClicked(e -> {
-            primaryStage.close();
-            stage2.show();
-        });
         textHowToPlay.setOnMouseClicked(e -> {
             primaryStage.close();
-            stage2.show();
+            stageHowToPlay.show();
         });
 
-        rectangleQuit.setOnMouseClicked(e -> primaryStage.close());
         textQuit.setOnMouseClicked(e -> primaryStage.close());
 
         textBack.setOnMouseClicked(e -> {
-            stage2.close();
+            stageHowToPlay.close();
             primaryStage.show();
         });
 
-        buttonPlayAgain.setOnAction(e -> {
+        textPlayAgain.setOnMouseClicked(e -> {
             stageGameOver.close();
             primaryStage.show();
         });
     }
 
+    //Start the game
     public void startGame() {
         newFood();
 
@@ -225,7 +201,7 @@ public class Main extends Application {
 
         Scene sceneGame = new Scene(root, width * cornerSize, height * cornerSize);
 
-        // control
+        //Control event
         sceneGame.addEventFilter(KeyEvent.KEY_PRESSED, key -> {
             if (key.getCode() == KeyCode.UP) {
                 direction = Dir.up;
@@ -241,7 +217,7 @@ public class Main extends Application {
             }
         });
 
-        // add start snake parts
+        //Add initial snake parts
         snake.add(new Corner(width / 2, height / 2));
         snake.add(new Corner(width / 2, height / 2));
         snake.add(new Corner(width / 2, height / 2));
@@ -249,6 +225,7 @@ public class Main extends Application {
         stageGame.setTitle("Playing");
     }
 
+    //Direction
     public enum Dir {
         left, right, up, down
     }
@@ -270,11 +247,32 @@ public class Main extends Application {
             return;
         }
 
+        //Set background color
+        gc.setFill(Color.PINK);
+        gc.fillRect(0, 0, width * cornerSize, height * cornerSize);
+
+        //Display Score
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font("cooper black", 20));
+        gc.fillText("Score: " + score, 5, 20);
+
+        //Set food color
+        Color cc = Color.RED;
+        gc.setFill(cc);
+        gc.fillOval(foodX * cornerSize, foodY * cornerSize, cornerSize, cornerSize);
+
+        //Set snake color
+        for (Corner c : snake) {
+            gc.setFill(Color.PALEGREEN);
+            gc.fillRect(c.x * cornerSize, c.y * cornerSize, cornerSize - 2, cornerSize - 2);
+        }
+
         for (int i = snake.size() - 1; i >= 1; i--) {
             snake.get(i).x = snake.get(i - 1).x;
             snake.get(i).y = snake.get(i - 1).y;
         }
 
+        //Set direction
         switch (direction) {
             case up -> {
                 snake.get(0).y--;
@@ -302,47 +300,27 @@ public class Main extends Application {
             }
         }
 
-        // eat food
+        //Eat food and add length of snake
         if (foodX == snake.get(0).x && foodY == snake.get(0).y) {
             snake.add(new Corner(-1, -1));
             newFood();
         }
 
-        // self destroy
+        //Collide body
         for (int i = 1; i < snake.size(); i++) {
             if (snake.get(0).x == snake.get(i).x && snake.get(0).y == snake.get(i).y) {
                 gameOver = true;
                 break;
             }
         }
-
-        // background
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, width * cornerSize, height * cornerSize);
-
-        // score
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font("", 20));
-        gc.fillText("Score: " + score, 10, 30);
-
-        // random foodColor
-        Color cc = Color.RED;
-        gc.setFill(cc);
-        gc.fillOval(foodX * cornerSize, foodY * cornerSize, cornerSize, cornerSize);
-
-        // snake
-        for (Corner c : snake) {
-            gc.setFill(Color.GREEN);
-            gc.fillRect(c.x * cornerSize, c.y * cornerSize, cornerSize - 2, cornerSize - 2);
-        }
     }
 
-    // food
+    //Food
     public static void newFood() {
         start:
         while (true) {
-            foodX = rand.nextInt(width);
-            foodY = rand.nextInt(height);
+            foodX = random.nextInt(width);
+            foodY = random.nextInt(height);
 
             for (Corner c : snake) {
                 if (c.x == foodX && c.y == foodY) {
@@ -354,17 +332,24 @@ public class Main extends Application {
         }
     }
 
+    //If gameOver
     public static void gameOver() {
         stageGame.close();
 
-        //Create vBox to hole textGameOver and buttonPlayAgain
+        //Create vBox to hole textGameOver, score and textPlayAgain
         VBox vBox = new VBox();
-        textGameOver.setFont(Font.font(50));
+        textGameOver.setFont(Font.font("cooper black",50));
         textGameOver.setFill(Color.RED);
-        vBox.getChildren().addAll(textGameOver, buttonPlayAgain);
+        textPlayAgain.setFont(Font.font("cooper black",20));
+        textPlayAgain.setFill(Color.WHITESMOKE);
+        Text textScore = new Text("Score: "+ score);
+        textScore.setFont(Font.font("cooper black",20));
+        textScore.setFill(Color.WHITESMOKE);
+        vBox.getChildren().addAll(textGameOver, textScore, textPlayAgain);
         vBox.setAlignment(Pos.CENTER);
         BorderPane borderPaneGameOver = new BorderPane();
         borderPaneGameOver.setCenter(vBox);
+        borderPaneGameOver.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         //Create scene for game over
         Scene sceneGameOver = new Scene(borderPaneGameOver);
