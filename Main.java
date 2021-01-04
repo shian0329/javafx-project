@@ -97,22 +97,22 @@ public class Main extends Application {
         primaryStage.setResizable(false);
 
         //Create scene (how to play)
-        ImageView imageView1 = new ImageView(new Image("image/control.png"));
+        ImageView imageView1 = new ImageView(new Image("file:control.png"));
         imageView1.setFitHeight(100);
         imageView1.setFitWidth(100);
         text1.setFont(Font.font("cooper black", 20));
 
-        ImageView imageView2 = new ImageView(new Image("image/eatFood.png"));
+        ImageView imageView2 = new ImageView(new Image("file:eatFood.png"));
         imageView2.setFitHeight(100);
         imageView2.setFitWidth(100);
         text2.setFont(Font.font("cooper black",20));
 
-        ImageView imageView3 = new ImageView(new Image("image/suicide.png"));
+        ImageView imageView3 = new ImageView(new Image("file:suicide.png"));
         imageView3.setFitHeight(100);
         imageView3.setFitWidth(100);
         text3.setFont(Font.font("cooper black",20));
 
-        ImageView imageView4 = new ImageView(new Image("image/wall.png"));
+        ImageView imageView4 = new ImageView(new Image("file:wall.png"));
         imageView4.setFitHeight(100);
         imageView4.setFitWidth(100);
         text4.setFont(Font.font("cooper black",20));
