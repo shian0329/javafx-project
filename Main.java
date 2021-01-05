@@ -31,6 +31,7 @@ public class Main extends Application {
     private static final Text text2 = new Text("Eat food to get higher mark");
     private static final Text text3 = new Text("Cannot collide with your body");
     private static final Text text4 = new Text("Cannot collide the wall");
+    private static final Text text5 = new Text("Use P to pause the game");
     private static final Text textGameOver = new Text("Game Over");
     private static final Text textPlayAgain = new Text("Play Again");
     private static final Text textExcellent = new Text("");
@@ -122,6 +123,11 @@ public class Main extends Application {
         imageView4.setFitWidth(100);
         text4.setFont(Font.font("cooper black",20));
 
+        ImageView imageView5 = new ImageView(new Image("file:P.png"));
+        imageView5.setFitHeight(100);
+        imageView5.setFitWidth(100);
+        text5.setFont(Font.font("cooper black",20));
+
         //Setting text (button)
         textBack.setFont(Font.font("cooper black",20));
         textBack.setFill(Color.RED);
@@ -136,6 +142,8 @@ public class Main extends Application {
         gridPane.add(text3,1,1);
         gridPane.add(imageView4,1,2);
         gridPane.add(text4,1,3);
+        gridPane.add(imageView5,2,0);
+        gridPane.add(text5,2,1);
         gridPane.setVgap(5);
         gridPane.setHgap(10);
         gridPane.setAlignment(Pos.CENTER);
@@ -238,7 +246,6 @@ public class Main extends Application {
                 a.start();
                 paused = false;
             }
-
         });
 
         //Add initial snake parts
