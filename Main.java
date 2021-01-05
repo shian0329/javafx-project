@@ -33,6 +33,7 @@ public class Main extends Application {
     private static final Text text4 = new Text("Cannot collide the wall");
     private static final Text textGameOver = new Text("Game Over");
     private static final Text textPlayAgain = new Text("Play Again");
+    private static final Text textExcellent = new Text("");
 
     //Variable for snake
     static int speed = 6;
@@ -47,6 +48,7 @@ public class Main extends Application {
     static boolean leftDirection = true;
     static boolean rightDirection = false;
     static boolean gameOver = false;
+    static boolean paused = false;
     static List<Corner> snake = new ArrayList<>();
     static Random random = new Random();
     static AnimationTimer a;
@@ -226,6 +228,17 @@ public class Main extends Application {
                 upDirection = false;
                 downDirection = false;
             }
+            if (!paused) {
+                if (key.getCode() == KeyCode.P) {
+                    a.stop();
+                    paused=true;
+                }
+            }
+            else {
+                a.start();
+                paused = false;
+            }
+
         });
 
         //Add initial snake parts
@@ -305,7 +318,6 @@ public class Main extends Application {
             }
         }
 
-
         //Eat food and add length of snake
         if (foodX == snake.get(0).x && foodY == snake.get(0).y) {
             snake.add(new Corner(-1, -1));
@@ -348,10 +360,20 @@ public class Main extends Application {
         textGameOver.setFill(Color.RED);
         textPlayAgain.setFont(Font.font("cooper black",20));
         textPlayAgain.setFill(Color.WHITESMOKE);
-        Text textScore = new Text("Score: "+ score);
+        Text textScore = new Text("Score: " + score);
         textScore.setFont(Font.font("cooper black",20));
         textScore.setFill(Color.WHITESMOKE);
-        vBox.getChildren().addAll(textGameOver, textScore, textPlayAgain);
+
+        //Create a text when score >= 20 or score >= 10
+        textExcellent.setFont(Font.font("cooper black",20));
+        textExcellent.setFill(Color.WHITESMOKE);
+        if (score >= 20) {
+            textExcellent.setText("Excellent!!!");
+        }else if (score >= 10) {
+            textExcellent.setText("Good try~");
+        }
+
+        vBox.getChildren().addAll(textGameOver, textScore, textExcellent, textPlayAgain);
         vBox.setAlignment(Pos.CENTER);
 
         //Use borderPane hold the vBox
