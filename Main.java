@@ -34,7 +34,7 @@ public class Main extends Application {
     private static final Text textGameOver = new Text("Game Over");
     private static final Text textPlayAgain = new Text("Play Again");
 
-    //variable for snake
+    //Variable for snake
     static int speed = 6;
     static int score = 0;
     static int width = 24;
@@ -42,9 +42,12 @@ public class Main extends Application {
     static int foodX = 0;
     static int foodY = 0;
     static int cornerSize = 15;
+    static boolean upDirection = false;
+    static boolean downDirection = false;
+    static boolean leftDirection = true;
+    static boolean rightDirection = false;
     static boolean gameOver = false;
     static List<Corner> snake = new ArrayList<>();
-    static Dir direction = Dir.left;
     static Random random = new Random();
     static AnimationTimer a;
     static GraphicsContext gc;
@@ -203,17 +206,25 @@ public class Main extends Application {
 
         //Control event
         sceneGame.addEventFilter(KeyEvent.KEY_PRESSED, key -> {
-            if (key.getCode() == KeyCode.UP) {
-                direction = Dir.up;
+            if ((key.getCode() == KeyCode.UP) && (!downDirection)) {
+                upDirection = true;
+                rightDirection = false;
+                leftDirection = false;
             }
-            if (key.getCode() == KeyCode.LEFT) {
-                direction = Dir.left;
+            if ((key.getCode() == KeyCode.DOWN) && (!upDirection)) {
+                downDirection = true;
+                rightDirection = false;
+                leftDirection = false;
             }
-            if (key.getCode() == KeyCode.DOWN) {
-                direction = Dir.down;
+            if ((key.getCode() == KeyCode.LEFT) && (!rightDirection)) {
+                leftDirection = true;
+                upDirection = false;
+                downDirection = false;
             }
-            if (key.getCode() == KeyCode.RIGHT) {
-                direction = Dir.right;
+            if ((key.getCode() == KeyCode.RIGHT) && (!leftDirection)) {
+                rightDirection = true;
+                upDirection = false;
+                downDirection = false;
             }
         });
 
@@ -223,11 +234,7 @@ public class Main extends Application {
         snake.add(new Corner(width / 2, height / 2));
         stageGame.setScene(sceneGame);
         stageGame.setTitle("Playing");
-    }
-
-    //Direction
-    public enum Dir {
-        left, right, up, down
+        stageGame.setResizable(false);
     }
 
     public static class Corner {
@@ -240,7 +247,7 @@ public class Main extends Application {
         }
     }
 
-    // tick
+    //Tick
     public void tick(GraphicsContext gc) {
         if (gameOver) {
             gameOver();
@@ -273,32 +280,31 @@ public class Main extends Application {
         }
 
         //Set direction
-        switch (direction) {
-            case up -> {
-                snake.get(0).y--;
-                if (snake.get(0).y < 0) {
-                    gameOver = true;
-                }
-            }
-            case down -> {
-                snake.get(0).y++;
-                if (snake.get(0).y > height) {
-                    gameOver = true;
-                }
-            }
-            case left -> {
-                snake.get(0).x--;
-                if (snake.get(0).x < 0) {
-                    gameOver = true;
-                }
-            }
-            case right -> {
-                snake.get(0).x++;
-                if (snake.get(0).x > width) {
-                    gameOver = true;
-                }
+        if (upDirection) {
+            snake.get(0).y--;
+            if (snake.get(0).y < 0) {
+                gameOver = true;
             }
         }
+        if (downDirection) {
+            snake.get(0).y++;
+            if (snake.get(0).y >= height) {
+                gameOver = true;
+            }
+        }
+        if (leftDirection) {
+            snake.get(0).x--;
+            if (snake.get(0).x < 0) {
+                gameOver = true;
+            }
+        }
+        if (rightDirection) {
+            snake.get(0).x++;
+            if (snake.get(0).x >= width) {
+                gameOver = true;
+            }
+        }
+
 
         //Eat food and add length of snake
         if (foodX == snake.get(0).x && foodY == snake.get(0).y) {
@@ -315,7 +321,7 @@ public class Main extends Application {
         }
     }
 
-    //Food
+    //Random food location and score++
     public static void newFood() {
         start:
         while (true) {
@@ -347,6 +353,8 @@ public class Main extends Application {
         textScore.setFill(Color.WHITESMOKE);
         vBox.getChildren().addAll(textGameOver, textScore, textPlayAgain);
         vBox.setAlignment(Pos.CENTER);
+
+        //Use borderPane hold the vBox
         BorderPane borderPaneGameOver = new BorderPane();
         borderPaneGameOver.setCenter(vBox);
         borderPaneGameOver.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -357,6 +365,7 @@ public class Main extends Application {
         stageGameOver.setTitle("Game Over");
         stageGameOver.setHeight(300);
         stageGameOver.setWidth(350);
+        stageGameOver.setResizable(false);
         stageGameOver.show();
 
         //Reset the game
