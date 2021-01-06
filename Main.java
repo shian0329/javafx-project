@@ -24,6 +24,7 @@ import java.util.Random;
 public class Main extends Application {
     private static final Text textTittle = new Text("Snake Game");
     private static final Text textStart = new Text("Start");
+    private static final Text textHardMode = new Text("Hard Mode");
     private static final Text textHowToPlay = new Text("How To Play");
     private static final Text textQuit = new Text("Quit");
     private static final Text textBack = new Text("Back");
@@ -32,6 +33,7 @@ public class Main extends Application {
     private static final Text text3 = new Text("Cannot collide with your body");
     private static final Text text4 = new Text("Cannot collide the wall");
     private static final Text text5 = new Text("Use P to pause the game");
+    private static final Text text6 = new Text("In the hard mode,\nyour snake will be faster\nafter eating a food\nGood Luck!");
     private static final Text textGameOver = new Text("Game Over");
     private static final Text textPlayAgain = new Text("Play Again");
     private static final Text textExcellent = new Text("");
@@ -50,6 +52,7 @@ public class Main extends Application {
     static boolean rightDirection = false;
     static boolean gameOver = false;
     static boolean paused = false;
+    static boolean hardMode = false;
     static List<Corner> snake = new ArrayList<>();
     static Random random = new Random();
     static AnimationTimer a;
@@ -74,19 +77,24 @@ public class Main extends Application {
         textStart.setFill(Color.WHITESMOKE);
         textStart.setFont(Font.font("cooper black",20));
 
+        textHardMode.setX(110);
+        textHardMode.setY(100);
+        textHardMode.setFill(Color.WHITESMOKE);
+        textHardMode.setFont(Font.font("cooper black",20));
+
         textHowToPlay.setX(102);
-        textHowToPlay.setY(100);
+        textHowToPlay.setY(135);
         textHowToPlay.setFill(Color.WHITESMOKE);
         textHowToPlay.setFont(Font.font("cooper black",20));
 
         textQuit.setX(142);
-        textQuit.setY(130);
+        textQuit.setY(170);
         textQuit.setFill(Color.WHITESMOKE);
         textQuit.setFont(Font.font("cooper black",20));
 
         //Create vBox to hold text (button)
         Pane paneButton = new Pane();
-        paneButton.getChildren().addAll(textStart, textHowToPlay, textQuit);
+        paneButton.getChildren().addAll(textStart, textHowToPlay, textHardMode, textQuit);
 
         //Create borderPane to hole title and all the text (button)
         BorderPane borderPane = new BorderPane();
@@ -128,6 +136,8 @@ public class Main extends Application {
         imageView5.setFitWidth(100);
         text5.setFont(Font.font("cooper black",20));
 
+        text6.setFont(Font.font("cooper black",20));
+
         //Setting text (button)
         textBack.setFont(Font.font("cooper black",20));
         textBack.setFill(Color.RED);
@@ -144,6 +154,8 @@ public class Main extends Application {
         gridPane.add(text4,1,3);
         gridPane.add(imageView5,2,0);
         gridPane.add(text5,2,1);
+        gridPane.add(text6,2,2);
+        gridPane.add(textBack,2,3);
         gridPane.setVgap(5);
         gridPane.setHgap(10);
         gridPane.setAlignment(Pos.CENTER);
@@ -151,7 +163,7 @@ public class Main extends Application {
         //Create borderPane to hole the gridPane and textBack
         BorderPane borderPane2 = new BorderPane();
         borderPane2.setCenter(gridPane);
-        borderPane2.setBottom(textBack);
+
         borderPane2.setPadding(new Insets(5,5,5,5));
         borderPane2.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
         Scene sceneHowToPlay = new Scene(borderPane2);
@@ -170,6 +182,13 @@ public class Main extends Application {
         textHowToPlay.setOnMouseClicked(e -> {
             primaryStage.close();
             stageHowToPlay.show();
+        });
+
+        textHardMode.setOnMouseClicked(e -> {
+            primaryStage.close();
+            stageGame.show();
+            startGame();
+            hardMode = true;
         });
 
         textQuit.setOnMouseClicked(e -> primaryStage.close());
@@ -352,7 +371,14 @@ public class Main extends Application {
                     continue start;
                 }
             }
-            score++;
+
+            if (hardMode) {
+                score++;
+                speed++;
+            } else  {
+                score++;
+            }
+
             break;
         }
     }
@@ -398,10 +424,12 @@ public class Main extends Application {
         stageGameOver.show();
 
         //Reset the game
-        gameOver=false;
+        gameOver = false;
+        hardMode = false;
         a.stop();
         snake.clear();
         score = 0;
+        speed = 6;
     }
 
     public static void main(String[] args) {
