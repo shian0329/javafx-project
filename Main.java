@@ -28,12 +28,12 @@ public class Main extends Application {
     private static final Text textHowToPlay = new Text("How To Play");
     private static final Text textQuit = new Text("Quit");
     private static final Text textBack = new Text("Back");
-    private static final Text text1 = new Text("Use keyboard to control");
-    private static final Text text2 = new Text("Eat food to get higher mark");
-    private static final Text text3 = new Text("Cannot collide with your body");
-    private static final Text text4 = new Text("Cannot collide the wall");
-    private static final Text text5 = new Text("Use P to pause the game");
-    private static final Text text6 = new Text("In the hard mode,\nyour snake will be faster\nafter eating a food\nGood Luck!");
+    private static final Text text1 = new Text("Use keyboard to control.");
+    private static final Text text2 = new Text("Eat food to get higher mark.");
+    private static final Text text3 = new Text("Cannot collide with your body.");
+    private static final Text text4 = new Text("Cannot collide with the wall.");
+    private static final Text text5 = new Text("Use P to pause the game.");
+    private static final Text text6 = new Text("In the hard mode,\nyour snake will be faster\nafter eating a food.\nGood Luck!");
     private static final Text textGameOver = new Text("Game Over");
     private static final Text textPlayAgain = new Text("Play Again");
     private static final Text textExcellent = new Text("");
@@ -55,7 +55,7 @@ public class Main extends Application {
     static boolean hardMode = false;
     static List<Corner> snake = new ArrayList<>();
     static Random random = new Random();
-    static AnimationTimer a;
+    static AnimationTimer animation;
     static GraphicsContext gc;
     static Canvas c;
     static Stage stageGame = new Stage();
@@ -152,10 +152,10 @@ public class Main extends Application {
         gridPane.add(text3,1,1);
         gridPane.add(imageView4,1,2);
         gridPane.add(text4,1,3);
-        gridPane.add(imageView5,2,0);
-        gridPane.add(text5,2,1);
-        gridPane.add(text6,2,2);
-        gridPane.add(textBack,2,3);
+        gridPane.add(imageView5,0,4);
+        gridPane.add(text5,0,5);
+        gridPane.add(text6,1,4);
+        gridPane.add(textBack,1,5);
         gridPane.setVgap(5);
         gridPane.setHgap(10);
         gridPane.setAlignment(Pos.CENTER);
@@ -163,7 +163,6 @@ public class Main extends Application {
         //Create borderPane to hole the gridPane and textBack
         BorderPane borderPane2 = new BorderPane();
         borderPane2.setCenter(gridPane);
-
         borderPane2.setPadding(new Insets(5,5,5,5));
         borderPane2.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
         Scene sceneHowToPlay = new Scene(borderPane2);
@@ -213,7 +212,7 @@ public class Main extends Application {
         gc = c.getGraphicsContext2D();
         root.getChildren().add(c);
 
-        a = new AnimationTimer() {
+        animation = new AnimationTimer() {
             long lastTick = 0;
 
             public void handle(long now) {
@@ -229,7 +228,7 @@ public class Main extends Application {
                 }
             }
         };
-        a.start();
+        animation.start();
 
         Scene sceneGame = new Scene(root, width * cornerSize, height * cornerSize);
 
@@ -257,12 +256,12 @@ public class Main extends Application {
             }
             if (!paused) {
                 if (key.getCode() == KeyCode.P) {
-                    a.stop();
+                    animation.stop();
                     paused=true;
                 }
             }
             else {
-                a.start();
+                animation.start();
                 paused = false;
             }
         });
@@ -298,7 +297,7 @@ public class Main extends Application {
         gc.fillRect(0, 0, width * cornerSize, height * cornerSize);
 
         //Display Score
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.WHITESMOKE);
         gc.setFont(new Font("cooper black", 20));
         gc.fillText("Score: " + score, 5, 20);
 
@@ -404,6 +403,8 @@ public class Main extends Application {
             textExcellent.setText("Excellent!!!");
         }else if (score >= 10) {
             textExcellent.setText("Good try~");
+        }else {
+            textExcellent.setText("");
         }
 
         vBox.getChildren().addAll(textGameOver, textScore, textExcellent, textPlayAgain);
@@ -426,7 +427,7 @@ public class Main extends Application {
         //Reset the game
         gameOver = false;
         hardMode = false;
-        a.stop();
+        animation.stop();
         snake.clear();
         score = 0;
         speed = 6;
